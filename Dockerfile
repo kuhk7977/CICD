@@ -1,19 +1,7 @@
-# Dockerfile
-
-FROM maven:3-openjdk-17
+FROM openjdk:17-jre-slim
 
 WORKDIR /app
 
-# Copying pom.xml file
-COPY pom.xml .
+COPY target/my-app.jar my-app.jar
 
-# Download dependencies
-RUN mvn dependency:go-offline -B
-
-# Copying source files
-COPY src ./src
-
-# Build application
-RUN mvn package -DskipTests=true
-
-CMD ["java", "-jar", "target/my-app.jar"]
+CMD ["java", "-jar", "my-app.jar"]
