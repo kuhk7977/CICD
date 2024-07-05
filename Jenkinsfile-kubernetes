@@ -17,6 +17,7 @@ spec:
     command:
     - /kaniko/executor
     args:
+    - --context=dir:///workspace
     - --dockerfile=/workspace/Dockerfile
     - --destination=eenue/my_cicd:$BUILD_NUMBER
     - --destination=eenue/my_cicd:latest
