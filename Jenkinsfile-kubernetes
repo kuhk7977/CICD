@@ -15,11 +15,11 @@ spec:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     command:
-    - /kaniko/executor
+    - /busybox/sh
     args:
-    - --dockerfile=/workspace/Dockerfile
-    - --destination=eenue/my_cicd:$BUILD_NUMBER
-    - --destination=eenue/my_cicd:latest
+    - -c
+    - |
+      /kaniko/executor --dockerfile=/workspace/Dockerfile --context=dir:///workspace --destination=eenue/my-app:$BUILD_NUMBER --destination=eenue/my-app:latest
     volumeMounts:
     - name: registry-credentials
       mountPath: /kaniko/.docker
@@ -37,7 +37,7 @@ spec:
         stage('Checkout') {
             steps {
                 container('maven') {
-                    checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/kuhk7977/CICD.git']]])
+                    git branch: 'main', url: '<YOUR_REPOSITORY>'
                 }
             }
         }
@@ -58,7 +58,7 @@ spec:
         stage('Build & Tag & Push Docker Image') {
             steps {
                 container('kaniko') {
-                    sh '/kaniko/executor --context=dir:///workspace --dockerfile=/workspace/Dockerfile --destination=eenue/my_cicd:$BUILD_NUMBER --destination=eenue/my_cicd:latest'
+                    sh '/busybox/sh -c "/kaniko/executor --dockerfile=/workspace/Dockerfile --context=dir:///workspace --destination=eenue/my-app:$BUILD_NUMBER --destination=eenue/my-app:latest"'
                 }
             }
         }
